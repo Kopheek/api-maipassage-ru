@@ -19,7 +19,7 @@ def create_app():
         "specs": [
             {
                 "endpoint": "apispec",
-                "route": "/api/v1/apispec.json",
+                "route": "/v2/apispec.json",
                 "rule_filter": lambda rule: True,
                 "model_filter": lambda tag: True,
             }
@@ -32,7 +32,7 @@ def create_app():
         "info": {
             "title": "Маёвский цитатник | API",
             "description": "API для цитат. Публичные эндпоинты доступны без авторизации.",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "contact": {"name": "t.me/maipassage"},
         },
         "basePath": "/",
