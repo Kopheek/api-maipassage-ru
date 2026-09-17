@@ -25,19 +25,9 @@
             // Если цитат несколько — берём случайную
             const randomIndex = Math.floor(Math.random() * quotes.length);
             const quote = quotes[randomIndex];
-            
-            // текст цитаты
+
             textEl.textContent = quote.text;
-            // автор цитаты + ссылка на МЦ (DOM)
-            authorEl.textContent = '';
-            authorEl.appendChild(document.createTextNode(`${quote.author} `));
-            const link = document.createElement('a');
-            link.href = 'https://maipassage.ru/'; // ссылка на маёвский цитатаник
-            link.textContent = '©️';
-            link.target = '_blank';
-            link.rel = 'noopener';
-            authorEl.appendChild(link);
-            //authorEl.appendChild(document.createTextNode(')'));
+            authorEl.textContent = `${quote.author} (c)`;
 
         } catch (error) {
             console.error('Не удалось загрузить цитату:', error);

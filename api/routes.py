@@ -20,11 +20,14 @@ def health():
             status:
               type: string
               example: ok
+            version:
+              type: string
+              example: 2.1.0
             quotes_count:
               type: integer
               example: 3
     """
-    return jsonify({"status": "ok", "version": "2.1.0", "quotes_count": len(quotes.get_all())})
+    return jsonify({"status": "ok", "version": "2.1.1", "quotes_count": len(quotes.get_all())})
 
 
 @bp.get("/quotes")
