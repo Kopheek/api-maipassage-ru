@@ -32,7 +32,7 @@ def create_app():
         "info": {
             "title": "Маёвский цитатник | API",
             "description": "API для цитат. Публичные эндпоинты доступны без авторизации.",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "contact": {"name": "t.me/maipassage"},
         },
         "basePath": "/",
