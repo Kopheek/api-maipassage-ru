@@ -2,12 +2,23 @@
 (function () {
     'use strict';
 
-    async function fetchQuoteByAuthor(author, textEl, authorEl) {
-        const apiUrl = `https://api.maipassage.ru/v2/quotes?author=${encodeURIComponent(author)}`;
+    async function fetchQuote(author, subject, textEl, authorEl) {
+        const params = new URLSearchParams();
+
+        if (author) {
+            params.set('author', author);
+        }
+        if (subject) {
+            params.set('subject', subject);
+        }
+
+        const apiUrl = `https://api.maipassage.ru/v2/quotes?${params.toString()}`;
 
         try {
             textEl.textContent = 'Загрузка...';
-            authorEl.textContent = '';
+            if (authorEl) {
+                authorEl.textContent = '';
+            }
 
             const response = await fetch(apiUrl);
             if (!response.ok) {
@@ -18,26 +29,24 @@
             const quotes = data.results || [];
 
             if (quotes.length === 0) {
-                textEl.textContent = `Цитат за авторством «${author}» не найдено.`;
+                // Формируем понятное сообщение, если ничего не нашли
+                const parts = [];
+                if (author) parts.push(`автор «${author}»`);
+                if (subject) parts.push(`предмет «${subject}»`);
+                textEl.textContent = `Цитат (${parts.join(', ')}) не найдено.`;
                 return;
             }
 
-            // Если цитат несколько — берём случайную
             const randomIndex = Math.floor(Math.random() * quotes.length);
             const quote = quotes[randomIndex];
-            
-            // текст цитаты
+
             textEl.textContent = quote.text;
-            // автор цитаты + ссылка на МЦ (DOM)
-            authorEl.textContent = '';
-            authorEl.appendChild(document.createTextNode(`${quote.author} `));
-            const link = document.createElement('a');
-            link.href = 'https://maipassage.ru/'; // ссылка на маёвский цитатаник
-            link.textContent = '©️';
-            link.target = '_blank';
-            link.rel = 'noopener';
-            authorEl.appendChild(link);
-            //authorEl.appendChild(document.createTextNode(')'));
+
+            if (authorEl) {
+                // Если у цитаты есть поле author — показываем его,
+                // иначе подставляем то, что искали
+                authorEl.textContent = quote.author || author || '';
+            }
 
         } catch (error) {
             console.error('Не удалось загрузить цитату:', error);
@@ -46,22 +55,32 @@
     }
 
     function init() {
-        // Находим все блоки с цитатами на странице
-        const containers = document.querySelectorAll('[data-quote-author]');
+        const containers = document.querySelectorAll('[data-quote-author], [data-quote-subject]');
 
         containers.forEach(container => {
-            const author = container.getAttribute('data-quote-author');
-            if (!author) return;
+            const author = container.getAttribute('data-quote-author') || '';
+            const subject = container.getAttribute('data-quote-subject') || '';
+
+            if (!author && !subject) {
+                console.warn('У контейнера не указан ни автор, ни предмет:', container);
+                return;
+            }
 
             const textEl = container.querySelector('[data-quote-text]');
             const authorEl = container.querySelector('[data-quote-author-name]');
 
-            if (!textEl || !authorEl) {
-                console.warn('Не найден элемент для текста или автора внутри', container);
+            if (!textEl) {
+                console.warn('Не найден элемент для текста цитаты внутри', container);
                 return;
             }
 
-            fetchQuoteByAuthor(author, textEl, authorEl);
+            const load = () => fetchQuote(author, subject, textEl, authorEl);
+            load();
+
+            const btn = container.querySelector('[data-quote-refresh]');
+            if (btn) {
+                btn.addEventListener('click', load);
+            }
         });
     }
 

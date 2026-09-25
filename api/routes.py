@@ -4,13 +4,13 @@ from .auth import require_api_key
 
 bp = Blueprint("api", __name__)
 
-
+# == for MAI.STEN == #
 @bp.get("/health")
 def health():
     """Проверка состояния API
     ---
     tags:
-      - system
+      - система
     responses:
       200:
         description: API работает
@@ -35,7 +35,8 @@ def list_quotes():
     """Список цитат с фильтрами
     ---
     tags:
-      - quotes
+      - цитаты
+      - mai.sten
     parameters:
       - in: query
         name: q
@@ -84,7 +85,8 @@ def get_quote(quote_id):
     """Одна цитата по ID
     ---
     tags:
-      - quotes
+      - цитаты
+      - mai.sten
     parameters:
       - in: path
         name: quote_id
@@ -109,7 +111,8 @@ def random_quote():
     """Случайная цитата
     ---
     tags:
-      - quotes
+      - цитаты
+      - mai.sten
     responses:
       200:
         description: Случайная цитата
@@ -130,7 +133,8 @@ def list_subjects():
     """Список предметов
     ---
     tags:
-      - meta
+      - данные
+      - mai.sten
     responses:
       200:
         description: Уникальные предметы
@@ -150,7 +154,8 @@ def list_authors():
     """Список авторов
     ---
     tags:
-      - meta
+      - данные
+      - mai.sten
     responses:
       200:
         description: Уникальные авторы
@@ -171,7 +176,8 @@ def reload_quotes():
     """Перечитать файл с цитатами (только для админа)
     ---
     tags:
-      - admin
+      - админ
+      - mai.sten
     security:
       - ApiKeyAuth: []
     responses:
