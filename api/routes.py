@@ -171,7 +171,7 @@ def list_authors():
 
 
 @bp.post("/admin/reload")
-#@require_api_key
+@require_api_key
 def reload_quotes():
     """Перечитать файл с цитатами (только для админа)
     ---
