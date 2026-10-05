@@ -1,10 +1,12 @@
 from flask import Blueprint, jsonify, request
-from . import quotes
-from .auth import require_api_key
+from . import quotes, stats
+from .decors import require_api_key, track_calls
+from config import version
 
 bp = Blueprint("api", __name__)
 
-# == for MAI.STEN == #
+# == MAIN == #
+
 @bp.get("/health")
 def health():
     """Проверка состояния API
@@ -27,10 +29,50 @@ def health():
               type: integer
               example: 3
     """
-    return jsonify({"status": "ok", "version": "2.1.1", "quotes_count": len(quotes.get_all())})
+    return jsonify({"status": "ok", "version": version})
 
+# == for маипассож == #
+
+@bp.get("/admin/stats")
+@require_api_key
+def get_stats_endpoint():
+    """Статистика обращений (только для админа)
+    ---
+    tags:
+      - admin
+    security:
+      - ApiKeyAuth: []
+    responses:
+      200:
+        description: Счётчики обращений
+      401:
+        description: Неверный или отсутствующий API-ключ
+    """
+    return jsonify(stats.get_stats())
+
+
+@bp.post("/admin/stats/reset")
+@require_api_key
+def reset_stats_endpoint():
+    """Сбросить статистику (только для админа)
+    ---
+    tags:
+      - admin
+    security:
+      - ApiKeyAuth: []
+    responses:
+      200:
+        description: Статистика сброшена
+      401:
+        description: Неверный или отсутствующий API-ключ
+    """
+    stats.reset_stats()
+    return jsonify({"status": "reset"})
+
+# == for MAI.STEN == #
 
 @bp.get("/quotes")
+@track_calls("quotes_list")
 def list_quotes():
     """Список цитат с фильтрами
     ---

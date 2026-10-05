@@ -3,3 +3,5 @@ __pycache__/
 *.pyc
 .env
 cmd-helper.txt
+data/stats.json
+data/.stats-*.tmp
