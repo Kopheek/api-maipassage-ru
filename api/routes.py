@@ -31,7 +31,28 @@ def health():
     """
     return jsonify({"status": "ok", "version": version})
 
-# == for маипассож == #
+# == for GitHub & Stats == #
+
+@bp.get("/stats/badge")
+def stats_badge():
+    """
+    Публичный эндпоинт для генерации бейджа Shields.io.
+    Отдаёт данные в формате Endpoint Badge.
+    """
+    stats_data = stats.get_stats()
+    total_calls = stats_data.get("total", 0)
+
+    # Форматируем число (1.5k, 2.3M), если хотим красиво
+    # Но Shields.io умеет это делать и сам, можно просто отдать число.
+    # Оставим просто число для простоты.
+    
+    response = {
+        "schemaVersion": 1,
+        "label": "API Calls",
+        "message": "online",
+        "color": "blue"  # Можно менять цвет динамически в будущем
+    }
+    return jsonify(response)
 
 @bp.get("/admin/stats")
 @require_api_key
