@@ -48,8 +48,8 @@ def stats_badge():
     
     response = {
         "schemaVersion": 1,
-        "label": "API Calls",
-        "message": "online",
+        "label": "Количество обращений к API",
+        "message": str(total_calls),
         "color": "blue"  # Можно менять цвет динамически в будущем
     }
     return jsonify(response)
